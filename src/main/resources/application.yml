@@ -1,0 +1,4 @@
+server:
+  reactive:
+    netty:
+      threads: 8
