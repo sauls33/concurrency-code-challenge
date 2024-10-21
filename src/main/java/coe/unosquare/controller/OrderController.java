@@ -25,11 +25,17 @@ public class OrderController {
     public Mono<ResponseEntity<ApiResponse>> submitOrder(@RequestParam("ordertype") Order.OrderType orderType,
                                                          @RequestParam("price") double price,
                                                          @RequestParam("quantity") int quantity) {
+
+        // Validate price and quantity values are greater than zero
+        if(price<=0 || quantity <=0){
+            throw new IllegalArgumentException("Price and quantity must be greater than 0");
+        }
+
         Order order = new Order(orderType, price, quantity);
 
         return orderService.processOrder(order)
-                .map(response -> ResponseEntity.ok(new ApiResponse(true, "Order processed successfully", response)))
-                .onErrorResume(response -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ApiResponse(false, "Order processing failed", response.getMessage()))));
+                .map(response -> ResponseEntity.ok(new ApiResponse(true,
+                        "Order processed successfully", response)));
+
     }
 }
