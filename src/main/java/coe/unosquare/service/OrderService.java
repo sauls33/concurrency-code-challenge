@@ -19,6 +19,8 @@ public class OrderService {
     public Mono<String> processOrder(Order order) {
         return Mono.fromCallable(() -> {
             // Process the order in a separate thread and return the result
+            orderMatcher.addOrder(order);
+            orderMatcher.matchOrders();
             return "Order processed: " + order;
         }).subscribeOn(Schedulers.boundedElastic()); // Asynchronous non-blocking processing
     }
