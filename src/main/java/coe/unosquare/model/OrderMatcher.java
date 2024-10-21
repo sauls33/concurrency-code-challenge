@@ -42,7 +42,7 @@ public class OrderMatcher {
     equal to the sell order price) and removes them from the queues once matched, simulating a trade between
     those orders.*/
     public void matchOrders() {
-        while(!buyOrders.isEmpty() || !sellOrders.isEmpty()){
+        while(!buyOrders.isEmpty() && !sellOrders.isEmpty()){
             Order buyOrder = buyOrders.peek();
             Order sellOrder = sellOrders.peek();
 
@@ -52,6 +52,8 @@ public class OrderMatcher {
             if(buyPrice >= sellPrice){
                 buyOrders.poll();
                 sellOrders.poll();
+            } else {
+                break;
             }
         }
     }
