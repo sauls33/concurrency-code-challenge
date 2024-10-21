@@ -1,11 +1,20 @@
 package coe.unosquare.model;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
+@Component
 public class OrderMatcher {
     private Queue<Order> buyOrders;
     private Queue<Order> sellOrders;
+
+    public OrderMatcher(){
+        this.buyOrders = new ConcurrentLinkedDeque<>();
+        this.sellOrders = new ConcurrentLinkedDeque<>();
+    }
 
     //Validate the order type and add into the corresponding q.
     public void addOrder(Order order) {
