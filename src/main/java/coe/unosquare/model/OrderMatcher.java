@@ -4,16 +4,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class OrderMatcher {
-    private Queue<Order> buyOrders;
-    private Queue<Order> sellOrders;
+    private final Queue<Order> buyOrders;
+    private final Queue<Order> sellOrders;
 
     public OrderMatcher(){
-        this.buyOrders = new ConcurrentLinkedDeque<>();
-        this.sellOrders = new ConcurrentLinkedDeque<>();
+        this.buyOrders = new ConcurrentLinkedQueue<>();
+        this.sellOrders = new ConcurrentLinkedQueue<>();
     }
 
     //Validate the order type and add into the corresponding q.
@@ -43,15 +43,19 @@ public class OrderMatcher {
     those orders.*/
     public void matchOrders() {
         while(!buyOrders.isEmpty() && !sellOrders.isEmpty()){
-            Order buyOrder = buyOrders.peek();
-            Order sellOrder = sellOrders.peek();
+            Optional<Order> optionalBuyOrder = getNextBuyOrder();
+            Optional<Order> optionalSellOrder = getNextSellOrder();
 
-            double buyPrice = buyOrder.getPrice().orElse(0.0);
-            double sellPrice = sellOrder.getPrice().orElse(0.0);
+            if(optionalBuyOrder.isPresent() && optionalSellOrder.isPresent()) {
+                Order buyOrder = optionalBuyOrder.get();
+                Order sellOrder = optionalSellOrder.get();
 
-            if(buyPrice >= sellPrice){
-                buyOrders.poll();
-                sellOrders.poll();
+                if (buyOrder.getPrice().orElse(0.0) >= sellOrder.getPrice().orElse(0.0)) {
+                    buyOrders.poll();
+                    sellOrders.poll();
+                } else {
+                    break;
+                }
             } else {
                 break;
             }

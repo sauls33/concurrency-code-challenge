@@ -17,11 +17,8 @@ public class GlobalExceptionHandler {
 
     // Handler for other non handled exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> GeneralExceptionHandler(Exception ex){
+    public ResponseEntity<ApiResponse> generalExceptionHandler(Exception ex){
         ApiResponse response = new ApiResponse(false, "Order processing failed",ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // TODO Generate more exception handlers here...
-
 }

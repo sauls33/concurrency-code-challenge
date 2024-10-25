@@ -3,6 +3,7 @@ package coe.unosquare.controller;
 import coe.unosquare.model.ApiResponse;
 import coe.unosquare.model.Order;
 import coe.unosquare.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -27,8 +29,8 @@ public class OrderController {
                                                          @RequestParam("quantity") int quantity) {
 
         // Validate price and quantity values are greater than zero
-        if(price<=0 || quantity <=0){
-            throw new IllegalArgumentException("Price and quantity must be greater than 0");
+        if (price <= 0 || quantity <= 0) {
+            return Mono.just(ResponseEntity.badRequest().body(new ApiResponse(false, "Price and quantity must be greater than 0", null)));
         }
 
         Order order = new Order(orderType, price, quantity);
